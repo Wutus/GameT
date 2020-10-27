@@ -2,38 +2,37 @@ from GameTheory import GameTheory
 import itertools
 
 class ForceNim(GameTheory):
-    def __init__(self, stacks, to_move, terminus_win = True):
-        self.org_stacks = list(stacks)
+    def __init__(self, max_stack, stack_count, to_move, terminus_win = True):
+        self.max_stack = max_stack
+        self.stack_count = stack_count
         self.to_move = to_move
-        terminuses = self._calc_terminuses(stacks, to_move)
+        terminuses = self._calc_terminuses(max_stack, stack_count, to_move)
         super().__init__(terminuses, self.legal_from, self.legal_to, terminus_win)
     
-    def _calc_terminuses(self, stacks, to_move):
-        s = set()
-        s.add(tuple([0] * len(stacks)))
-        for itm in range(1, to_move):
-            for comb in itertools.combinations(range(len(stacks)), itm):
-                vals = [range(1, stacks[i] + 1) if i in comb else [0] for i in range(len(stacks))]
-                prods = itertools.product(*vals)
-                s.update(prods)
-        return frozenset(s)
+    def _calc_terminuses(self, max_stack, stack_count, to_move):
+        vals = [[0]] * (stack_count - to_move) + [range(max_stack)] * to_move
+        prods = itertools.product(*vals)
+        prods_sorted = [tuple(sorted(x)) for x in prods]
+        return frozenset(prods_sorted)
 
     def legal_from(self, state):
         s = set()
         sl = list(state)
-        for comb in itertools.combinations(range(len(self.org_stacks)), self.to_move):
-            vals = [range(0, state[i]) if i in comb else [state[i]] for i in range(len(self.org_stacks))]
+        for comb in itertools.combinations(range(self.stack_count), self.to_move):
+            vals = [range(0, state[i]) if i in comb else [state[i]] for i in range(self.stack_count)]
             prods = itertools.product(*vals)
-            s.update(prods)
+            prods_sorted = [tuple(sorted(x)) for x in prods]
+            s.update(prods_sorted)
         states = frozenset(s)
         return states
 
     def legal_to(self, state):
         s = set()
         sl = list(state)
-        for comb in itertools.combinations(range(len(self.org_stacks)), self.to_move):
-            vals = [range(state[i] + 1, self.org_stacks[i] + 1) if i in comb else [state[i]] for i in range(len(self.org_stacks))]
+        for comb in itertools.combinations(range(self.stack_count), self.to_move):
+            vals = [range(state[i] + 1, self.max_stack + 1) if i in comb else [state[i]] for i in range(self.stack_count)]
             prods = itertools.product(*vals)
-            s.update(prods)
+            prods_sorted = [tuple(sorted(x)) for x in prods]
+            s.update(prods_sorted)
         states = frozenset(s)
         return states

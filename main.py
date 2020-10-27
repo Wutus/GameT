@@ -9,13 +9,15 @@ import traceback
 
 def main():
     try:
-        max_stack = [5,5,5,5,5]
+        max_stack = 9
+        stack_count = 7
         to_move = 2
+        target = [9,7,5,6,7,8,9]
         sys.setrecursionlimit(50000)
-        nim = ForceNim(max_stack, to_move)
-        nim.reach(tuple(max_stack))
+        nim = ForceNim(max_stack, stack_count, to_move)
+        nim.reach(tuple(sorted(target)))
         p_s = nim.p_states
-        filename = f"ForceNim-{max_stack}-{to_move}.csv"
+        filename = f"ForceNim-{max_stack}-{stack_count}-{to_move}-{target}.csv"
         print(f"Saving to {filename}")
         with open(filename, 'w') as f:
             for p in p_s:
