@@ -24,8 +24,8 @@ class GameTheory:
         else:
             self.p_states = set()
             self.new_p_states = set()
-            self.n_states = set(self.terminus_win)
-            self.new_n_states = set(self.terminus_win)
+            self.n_states = set(self.terminuses)
+            self.new_n_states = set(self.terminuses)
             self._process_new_n(state)
 
     def re_reach(self, state):
